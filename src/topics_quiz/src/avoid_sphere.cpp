@@ -38,6 +38,7 @@ private:
     int startingIndexRight = 0;
     int startingIndexLeft = source_array_size - target_array_size;
 
+    // create a sub array for each 3 sides
     create_sub_scan(scan_data, front_scan, startingIndexFront, target_array_size);
     create_sub_scan(scan_data, left_scan, startingIndexLeft, target_array_size);
     create_sub_scan(scan_data, right_scan, startingIndexRight, target_array_size);
@@ -74,7 +75,8 @@ private:
     }
   }
   
-  void create_sub_scan(const sensor_msgs::msg::LaserScan::SharedPtr &source_array, std::vector<float> &output_array, int sub_index, int target_array_size)
+  void create_sub_scan(const sensor_msgs::msg::LaserScan::SharedPtr &source_array, 
+            std::vector<float> &output_array, int sub_index, int target_array_size)
   {
     // Create target array
     for (int i = 0; i < target_array_size; ++i) {

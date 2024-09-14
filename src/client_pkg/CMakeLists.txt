@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(custom_interfaces)
+project(client_pkg)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -8,8 +8,7 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
+find_package(std_srvs REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -23,9 +22,26 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/Age.msg"
-  "srv/MyCustomServiceMessage.srv"
+add_executable(service_client_node src/service_client.cpp)
+ament_target_dependencies(service_client_node rclcpp std_srvs)
+
+add_executable(stop_client_node src/stop_client.cpp)
+ament_target_dependencies(stop_client_node rclcpp std_srvs)
+
+add_executable(service_client_v2 src/service_client_v2.cpp)
+ament_target_dependencies(service_client_v2 rclcpp std_srvs)
+
+install(TARGETS
+   service_client_node
+   stop_client_node
+   service_client_v2
+   DESTINATION lib/${PROJECT_NAME}
+ )
+
+# Install launch files.
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
 )
 
 ament_package()

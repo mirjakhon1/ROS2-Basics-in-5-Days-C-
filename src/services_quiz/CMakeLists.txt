@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(custom_interfaces)
+project(services_quiz)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -8,8 +8,8 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
+find_package(services_quiz_srv REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -23,9 +23,22 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/Age.msg"
-  "srv/MyCustomServiceMessage.srv"
+add_executable(quiz_service_node src/quiz_service.cpp)
+ament_target_dependencies(quiz_service_node rclcpp services_quiz_srv geometry_msgs)
+
+add_executable(quiz_client_node src/quiz_client.cpp)
+ament_target_dependencies(quiz_client_node rclcpp services_quiz_srv)
+
+
+install(TARGETS
+	quiz_service_node
+	quiz_client_node
+	DESTINATION lib/${PROJECT_NAME}
+)
+
+install(DIRECTORY
+	launch
+	DESTINATION share/${PROJECT_NAME}
 )
 
 ament_package()
